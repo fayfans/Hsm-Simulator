@@ -175,16 +175,16 @@ class Hsm extends Actor {
           val rndLen = cmd.substring(25, 29).toInt
           val rnd = cmd.substring(29, 29 + rndLen * 2)
           val len = cmd.substring(29 + rndLen * 2, 33 + rndLen * 2).toInt
-          val data = cmd.substring(33 + rndLen * 2, 33 + (rndLen + len) * 2)
+          val data = hex2Bytes(cmd.substring(33 + rndLen * 2, 33 + (rndLen + len) * 2))
           val prefix = cmd.substring(37 + (rndLen + len) * 2)
           val key = CipherUtils.diversify(mk, asn)
           val secureMessage = if (mode == 2) {
-            bytes2Hex(CipherUtils.tripleDes(key, hex2Bytes(f"${data.length / 2}%02X$data")))
+            CipherUtils.tripleDes(key, data)
           } else {
             data
           }
-          val mac = CipherUtils.mac(key, hex2Bytes(vectorPadding(rnd)), hex2Bytes(prefix + secureMessage))
-          sender() ! "EC00" + (if (mode == 2) f"${secureMessage.length / 2}%04d" + secureMessage else "") + bytes2Hex(mac)
+          val mac = CipherUtils.mac(key, hex2Bytes(vectorPadding(rnd)), hex2Bytes(prefix) ++ secureMessage)
+          sender() ! "EC00" + (if (mode == 2) bytes2Hex(secureMessage) else "") + bytes2Hex(mac)
         }
       } else if (cmd.startsWith("EC")) {
         val index = cmd.substring(2, 7)
