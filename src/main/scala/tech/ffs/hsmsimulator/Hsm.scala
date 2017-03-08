@@ -133,7 +133,7 @@ class Hsm extends Actor {
               CipherUtils.diversify(mk, data)
             } else {
               val data1 = hex2Bytes(cmd.substring(9, 25))
-              val data2 = hex2Bytes(cmd.substring(25, 31))
+              val data2 = hex2Bytes(cmd.substring(25, 41))
               CipherUtils.diversify(CipherUtils.diversify(mk, data1), data2)
             }
             val encryptedKey = CipherUtils.tripleDes(hex2Bytes(ik), key ++ hex2Bytes("8000000000000000"))
