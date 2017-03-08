@@ -184,7 +184,7 @@ class Hsm extends Actor {
             data
           }
           val mac = CipherUtils.mac(key, hex2Bytes(vectorPadding(rnd)), hex2Bytes(prefix) ++ secureMessage)
-          sender() ! "EC00" + (if (mode == 2) bytes2Hex(secureMessage) else "") + bytes2Hex(mac)
+          sender() ! "EC00" + (if (mode == 2) f"${secureMessage.length}%04d" + bytes2Hex(secureMessage) else "") + bytes2Hex(mac)
         }
       } else if (cmd.startsWith("EC")) {
         val index = cmd.substring(2, 7)

@@ -11,7 +11,6 @@ object CipherUtils {
   def xor(x: Array[Byte], y: Array[Byte]) = (x zip y) map { case (a, b) => (a ^ b).toByte }
 
   def tripleDes(key: Array[Byte], data: Array[Byte]) = {
-    if (key.length != 16) throw new IllegalArgumentException("Wrong key size")
     val tdesKey = key ++ key.slice(0, 8)
     val cipher = Cipher.getInstance("DESede")
     cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(tdesKey, "DESede"))
@@ -22,14 +21,10 @@ object CipherUtils {
   }
 
   def diversify(mk: Array[Byte], seed: Array[Byte]) = {
-    if (mk.length != 16) throw new IllegalArgumentException("Wrong key size")
-    if (seed.length != 8) throw new IllegalArgumentException("Wrong seed size")
     tripleDes(mk, seed) ++ tripleDes(mk, seed.map(a => (~a).toByte))
   }
 
   def mac(key: Array[Byte], iv: Array[Byte], data: Array[Byte]) = {
-    if (key.length != 16) throw new IllegalArgumentException("Wrong key size")
-    if (iv.length != 8) throw new IllegalArgumentException("Wrong iv size")
     val cipher = Cipher.getInstance("DES")
     cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key.slice(0, 8), "DES"))
     val padding = Array(0x80.toByte) ++ zeroArray(7 - data.length % 8)
@@ -39,7 +34,6 @@ object CipherUtils {
   }
 
   def tac(key: Array[Byte], data: Array[Byte]) = {
-    if (key.length != 8) throw new IllegalArgumentException("Wrong key size")
     val cipher = Cipher.getInstance("DES")
     cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(key, "DES"))
     val padding = Array(0x80.toByte) ++ zeroArray(7 - data.length % 8)
