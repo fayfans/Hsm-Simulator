@@ -125,7 +125,7 @@ class Hsm extends Actor {
           val index = cmd.substring(3, 8)
           val mk = hex2Bytes(indexMap(index))
           val times = cmd(8).asDigit
-          if (index == "00401" && times == 1 || times == 2) {
+          if (index == "00401" && times == 1 || index != "00401" && times == 2) {
             sender() ! "X417"
           } else {
             val key = if (times == 1) {
