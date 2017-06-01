@@ -25,7 +25,7 @@ class Hsm extends Actor {
   private val initCCK = db.get("cck".getBytes())
   private var cck = if (initCCK == null) "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF" else new String(initCCK)
   private val initIK = db.get("ik".getBytes())
-  private var ik = if (initIK == null) "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF" else new String(initIK)
+  private var ik = if (initIK == null) "4AEA5776405DC48AB5E92C380B68C4EC" else new String(initIK)
 
   private val conf = ConfigFactory.load()
   private val authCode = conf.getString("authcode")
